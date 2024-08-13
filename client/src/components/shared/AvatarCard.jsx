@@ -8,8 +8,6 @@ const AvatarCard = ({ avatar = [], max = 4 }) => {
 
     // todo transform...
 
-    console.log(avatar)
-
   return (
     <Stack direction={"row"} spacing={0.5}>
       <AvatarGroup max={max}>

@@ -7,6 +7,7 @@ import {
   Avatar,
   IconButton,
   Typography,
+  Button,
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add'; // Import AddIcon from Material-UI icons
 import React, { memo } from "react";
@@ -37,7 +38,7 @@ const Notifications = () => {
 
 
 const NotificationsItem = memo(({sender,_id,handler})=>{
-  console.log(sender);
+  const {name,avatar} = sender;
   return (
      <ListItem>
       <Stack
@@ -59,23 +60,19 @@ const NotificationsItem = memo(({sender,_id,handler})=>{
             width:"100%"
           }}
         >
-         {sender.name}
+         {`${name} sent you a friend request.`}        
         </Typography>
-
-        <IconButton
-          size="small"
-          sx={{
-            bgcolor: "primary.main",
-            color: "white",
-            "&:hover": {
-              bgcolor: "primary.dark",
-            },
+         
+         <Stack
+          direction={{
+            xs:"column",
+            sm:"row",
           }}
-          // onClick={() => handler(_id)}
-          // disabled={handlerIsLoading}
-        >
-          <AddIcon />
-        </IconButton>
+          >
+           <Button onClick={()=>handler({_id,accept:true})}>Accept</Button>
+           <Button color="error" onClick={()=>handler({_id,accept:false})}>Reject</Button>
+         </Stack>
+                 
       </Stack>
     </ListItem>
   )
