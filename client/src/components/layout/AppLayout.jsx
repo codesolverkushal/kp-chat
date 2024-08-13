@@ -26,13 +26,7 @@ const AppLayout = () => (WrappedComponent) => {
             }}
             height={"100%"}
           >
-            <ChatList chats={sampleChats} chatId={chatId} 
-              newMessagesAlert={[{
-                chatId,
-                count:4
-              }]}
-              onlineUsers={["1","2"]}
-            />
+            <ChatList chats={sampleChats} chatId={chatId} />
           </Grid>
           <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"}>
             <WrappedComponent {...props} />
