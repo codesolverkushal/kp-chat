@@ -24,7 +24,7 @@ const ChatList = ({
           ({ chatId }) => chatId === _id
         );
 
-        console.log(onlineUsers);
+        // console.log(onlineUsers);
         
 
         const isOnline = members?.some((member) => onlineUsers.includes(member));        
@@ -38,7 +38,7 @@ const ChatList = ({
             name={name}
             key={_id}
             sameSender={chatId === _id}
-            handleDeleteChatOpen={handleDeleteChat}
+            handleDeleteChat={handleDeleteChat}
           />
         );
       })}

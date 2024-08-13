@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProtectRoute from './components/auth/ProtectRoute';
 import { LayoutLoader } from './components/layout/Loaders';
+import Test from './test/Test';
 
 
 // Lazy loading components
@@ -21,6 +22,8 @@ const App = () => {
             <Route path='/' element={<Home />} />
             <Route path='/chat/:chatId' element={<Chat />} />
             <Route path='/groups' element={<Groups />} />
+            <Route path='/test' element={<Test/>}></Route>
+
           </Route>
           <Route path='/login' element={<ProtectRoute user={!user} redirect='/'><Login /></ProtectRoute>} />
         </Routes>
