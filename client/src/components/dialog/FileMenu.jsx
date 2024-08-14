@@ -6,6 +6,7 @@ const FileMenu = ({ anchorEl }) => {
     <Menu
       // Open menu only if anchorEl is not null
       anchorEl={anchorEl}
+      open={false}
     >
       <div
         style={{
