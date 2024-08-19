@@ -11,7 +11,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "2",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -19,7 +19,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "3",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -27,7 +27,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "4",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -35,7 +35,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "5",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -43,7 +43,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "6",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -51,7 +51,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "7",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -59,7 +59,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "8",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -67,7 +67,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "9",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -75,7 +75,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "10",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -83,7 +83,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "11",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -91,7 +91,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "12",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -99,7 +99,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "13",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -107,7 +107,7 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "14",
         groupChat: false,
         members: ["1", "2"],
     },
@@ -115,14 +115,14 @@ export const sampleChats = [
         // Use the relative path from your project’s source directory to where the image is stored
         avatar: ["/images/avatar1.png"],
         name: "John Doe",
-        _id: "1",
+        _id: "15",
         groupChat: false,
         members: ["1", "2"],
     },
     {
         avatar: ["/images/avatar1.png"],
         name: "John Boi",
-        _id: "2",
+        _id: "16",
         groupChat: false,
         members: ["1", "2"],
     }
