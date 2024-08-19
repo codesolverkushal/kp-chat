@@ -14,6 +14,7 @@ import {
   CurveButton,
 } from "../../components/styles/StyledComponents";
 
+import {LineChart} from "../../components/specific/Chart"
 const Dashboard = () => {
   const Appbar = (
     <Paper
@@ -65,13 +66,22 @@ const Dashboard = () => {
       <Container component={"main"}>
         {Appbar}
 
-        <Stack direction={"row"} spacing={"2rem"} flexWrap={"wrap"}>
+        <Stack direction={{
+          xs:"column",
+          lg:"row",
+        }}flexWrap={"wrap"} justifyContent={"center"}
+         alignItems={{
+          xs:"center",
+          lg:"strech",
+         }}
+         sx={{gap:"2rem"}}
+        >
           <Paper
             elevation={6}
             sx={{
               padding: "2rem 3rem",
               borderRadius: "1rem",
-              width: "100%",
+              width: { xs: "100%", sm: "50%" },
               maxWidth: "45rem",
               backgroundColor: "#f5f5f5",
               boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
@@ -83,7 +93,7 @@ const Dashboard = () => {
             >
               Last Messages
             </Typography>
-            {"chat"}
+            <LineChart value={[1,5,34,12]}/>
           </Paper>
 
           <Paper
@@ -99,7 +109,7 @@ const Dashboard = () => {
               maxWidth: "25rem",
             }}
           >
-            {"Dougnut Chart"}
+            <DoughnutChart labels={["Single Chats","Group Chats"]} value={[23,66]}/>
           <Stack 
            position={"absolute"}
            direction={"row"}
@@ -133,6 +143,7 @@ const Dashboard = () => {
 
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { DoughnutChart } from "../../components/specific/Chart";
 
 const Widget = ({ title, value, Icon }) => {
   const theme = useTheme();
