@@ -58,8 +58,8 @@ const Sidebar = ({ w = "100%" }) => {
     console.log("Logout");
   };
   return (
-    <Stack width={w} direction={"column"} p={"3re"} spacing={"3rem"}>
-      <Typography variant="h5" textTransform={"uppercase"}>
+    <Stack width={w} direction={"column"} p={"3rem"} spacing={"3rem"}>
+      <Typography alignSelf={"center"}  variant="h4" textTransform={"uppercase"}>
         Kp-Chat
       </Typography>
 
