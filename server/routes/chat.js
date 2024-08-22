@@ -1,6 +1,6 @@
 import express from 'express';
 import { isAuthenticated } from "../middlewares/auth.js";
-import { addMembers, getMyChat, getMyGroups, newGroupChat } from '../controllers/chat.js';
+import { addMembers, getMyChat, getMyGroups, newGroupChat, removeMember } from '../controllers/chat.js';
 const app = express.Router();
 
 
@@ -15,6 +15,10 @@ app.get("/my",getMyChat);
 
 app.get("/my/groups",getMyGroups);
 
-app.put("/addmembers",addMembers)
+app.put("/addmembers",addMembers);
+
+app.put("/removemember",removeMember);
+
+app.delete("/leave/:id")
 
 export default app;
