@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 
 import userRoute from './routes/user.js'; 
 import chatRoute from './routes/chat.js';
-import { createUser } from './seeders/user.js';
+// import { createGroupChats, createSingleChats,createUser,createMessagesInAChat } from './seeders/user.js';
 
 
 
@@ -22,7 +22,10 @@ const port = process.env.PORT || 3000;
 connectDB(mongoURI);
 
 // createUser(10);
+// createSingleChats(10);
+// createGroupChats(10);
 
+// createMessagesInAChat("66c7817e3129e4040093c857",50);
 
 const app = express();
 
