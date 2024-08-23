@@ -2,6 +2,7 @@ import express from 'express';
 import { getMyProfile, login, logout, newUser,searchUser } from '../controllers/user.js';
 import { singleAvatar } from '../middlewares/multer.js';
 import { isAuthenticated } from "../middlewares/auth.js";
+import { loginValidator, registerValidator,validateHandler } from '../lib/validators.js';
 
 const app = express.Router();
 
@@ -14,10 +15,10 @@ const cookieOptions = {
 }
 
 // Route to create a new user, with avatar upload middleware
-app.post("/new", singleAvatar, newUser);
+app.post("/new", singleAvatar, registerValidator(), validateHandler, newUser);
 
 // Route to log in a user
-app.post("/login", login);
+app.post("/login", loginValidator(), validateHandler, login);
 
 
 
