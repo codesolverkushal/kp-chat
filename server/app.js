@@ -28,6 +28,8 @@ connectDB(mongoURI);
 
 // createMessagesInAChat("66c7817e3129e4040093c857",50);
 
+export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "codesolverkushal";
+
 const app = express();
 
 app.use(express.json());
