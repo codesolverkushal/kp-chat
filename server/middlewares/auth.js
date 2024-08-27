@@ -1,13 +1,13 @@
 import { adminSecretKey } from "../app.js";
 import { ErrorHandler } from "../utils/utility.js";
-
 import jwt from 'jsonwebtoken';
 import { TryCatch } from "./error.js";
+import { KP_TOKEN } from "../constants/config.js";
 
 
 const isAuthenticated = TryCatch((req,res,next)=>{
-  const token = req.cookies["kp-token"];
-  
+  const token = req.cookies[KP_TOKEN];
+ 
  
   if(!token) return next(new ErrorHandler("please login to access this route", 401));
 

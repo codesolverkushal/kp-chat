@@ -1,0 +1,1 @@
+export const KP_TOKEN = "kp-token";

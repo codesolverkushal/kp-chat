@@ -25,27 +25,34 @@ const Login = () => {
   const avatar = useFileHandler("single");
 
 
-  const handleLogin = async (e)=>{
+  const handleLogin = async (e) => {
     e.preventDefault();
+    
     const config = {
-      withCredential: true,
-      headers:{
-        "Content-Type":"application/json"
-      }};
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
     try {
-      const {data} = await axios.post(`${server}/api/v1/user/login`,{
-        username: username.value,
-        password: password.value
-      },
-       config
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          username: username.value,
+          password: password.value,
+        },
+        config
       );
-      dispatch(userExists(true));
-      toast.success(data.message);
+      dispatch(userExists(data.user));
+      toast.success(data.message, {
+       
+      });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
-    }
-  }
+      toast.error(error?.response?.data?.message || "Something Went Wrong");
+    } 
+  };
+
 
   const handleSignUp = async (e) => {
     e.preventDefault();  
