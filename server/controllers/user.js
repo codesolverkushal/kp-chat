@@ -10,22 +10,20 @@ import { getOtherMember } from './../lib/helper.js';
 // Create a new user and save it to the database and save in cookie
 
 
-const newUser = TryCatch(async (req, res) => {
+const newUser = TryCatch(async (req, res, next) => {
   const { name, username, password, bio } = req.body;
 
   const file = req.file;
 
+  if (!file) return next(new ErrorHandler("Please Upload Avatar"));
 
-  if(!file) return next(new ErrorHandler("Please upload Avatar"));
-
-
+  const result = await uploadFilesToCloudinary([file]);
 
   const avatar = {
-    public_id: "sdfsd",
-    url: "asdfd"
+    public_id: result[0].public_id,
+    url: result[0].url,
   };
 
-  
   const user = await User.create({
     name,
     bio,
@@ -34,7 +32,7 @@ const newUser = TryCatch(async (req, res) => {
     avatar,
   });
 
-  sendToken(res, user, 201, "User Created");
+  sendToken(res, user, 201, "User created");
 });
 
 // Login User and Save token in cookie...
