@@ -18,6 +18,7 @@ const AppLayout = () => (WrappedComponent) => {
 
     const dispatch = useDispatch();
     const { isMobile } = useSelector((state) => state.misc);
+    const { user } = useSelector((state) => state.auth);
     
     
     
@@ -84,7 +85,7 @@ const AppLayout = () => (WrappedComponent) => {
             }}
             height={"100%"}
           >
-            <Profile />
+            <Profile user={user}/>
           </Grid>
         </Grid>
       </>

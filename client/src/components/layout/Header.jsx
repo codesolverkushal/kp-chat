@@ -36,9 +36,7 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const {isSearch} = useSelector((state) => state.misc)
-  
-  console.log(isSearch)
- 
+
  
   const [isNewGroup, setIsNewGroup] = useState(false);
   const [isNotification, setIsNotification] = useState(false);
