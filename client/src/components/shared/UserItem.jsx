@@ -3,7 +3,7 @@ import React from "react";
 import { memo } from "react";
 
 import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
-
+import { transformImage } from "../../lib/features";
 const UserItem = ({ user, handler, handlerIsLoading,isAdded, styling = {}}) => {
   const { name, _id, avatar } = user;
 
@@ -17,7 +17,7 @@ const UserItem = ({ user, handler, handlerIsLoading,isAdded, styling = {}}) => {
         width={"100%"}
         {...styling}
       >
-        <Avatar />
+        <Avatar src={transformImage(avatar)} />
         <Typography
           variant="body1"
           sx={{
