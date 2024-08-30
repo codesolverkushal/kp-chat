@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AppLayout from '../components/layout/AppLayout';
-import { IconButton, Stack } from '@mui/material';
+import { IconButton, Skeleton, Stack } from '@mui/material';
 import { graycolor } from '../constants/color';
 import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material';
 import { InputBox } from '../components/styles/StyledComponents';
@@ -8,14 +8,52 @@ import { orange } from '../constants/color';
 import FileMenu from '../components/dialog/FileMenu';
 import { sampleMessage } from '../constants/sampleData';
 import MessageComponent from '../components/shared/MessageComponent';
+import { getSocket } from '../Socket';
+import {NEW_MESSAGE} from "../constants/events";
+import { useChatDetailsQuery } from '../redux/api/api';
 const user = {
   _id:"sdfsdfsdf",
   name:"Kp singh"
 }
-const Chat = () => {
+const Chat = ({chatId}) => {
   const containerRef = useRef(null);
+
+  const socket = getSocket();
+
+  const chatDetails = useChatDetailsQuery({chatId,skip:!chatId})
+
+  const [message,setMessage] = useState("");
+
+  const members = chatDetails ?. data ?. chat ?. members;
   
-  return (
+
+  const submitHandler = (e)=>{
+    e.preventDefault();
+
+    if(!message.trim()) return ;
+
+
+    // Emitting message to the server...
+    socket.emit(NEW_MESSAGE,{chatId,members,message});
+    setMessage("");
+  }
+
+
+  const newMessagesHandler = useCallback((data)=>{
+    console.log(data);
+  },[])
+  
+  useEffect(()=>{
+     socket.on(NEW_MESSAGE,newMessagesHandler);
+
+     return ()=>{
+      socket.off(NEW_MESSAGE,newMessagesHandler)
+     }
+  },[])
+
+  return chatDetails.isLoading ? ( <Skeleton/> 
+
+  ) : (
     <>
       <Stack
         ref={containerRef}
@@ -38,7 +76,7 @@ const Chat = () => {
 
       </Stack>
 
-      <form style={{ height: '10%' }}>
+      <form style={{ height: '10%' }} onSubmit={submitHandler}>
         <Stack
           direction={"row"}
           height={"100%"}
@@ -56,7 +94,7 @@ const Chat = () => {
             <AttachFileIcon />
           </IconButton>
 
-          <InputBox placeholder='Type your thought...' />
+          <InputBox placeholder='Type your thought...' value={message} onChange={(e)=>setMessage(e.target.value)}/>
 
           <IconButton
             type='submit'
@@ -78,6 +116,7 @@ const Chat = () => {
       <FileMenu />
     </>
   );
+
 };
 
 export default AppLayout()(Chat); // Corrected HOC usage
