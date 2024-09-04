@@ -11,11 +11,10 @@ import MessageComponent from '../components/shared/MessageComponent';
 import { getSocket } from '../Socket';
 import {NEW_MESSAGE} from "../constants/events";
 import { useChatDetailsQuery } from '../redux/api/api';
-const user = {
-  _id:"sdfsdfsdf",
-  name:"Kp singh"
-}
-const Chat = ({chatId}) => {
+import { useSocketEvents } from '../hooks/Hook';
+
+
+const Chat = ({chatId,user}) => {
   const containerRef = useRef(null);
 
   const socket = getSocket();
@@ -23,6 +22,10 @@ const Chat = ({chatId}) => {
   const chatDetails = useChatDetailsQuery({chatId,skip:!chatId})
 
   const [message,setMessage] = useState("");
+
+  const [messages,setMessages] = useState([]);
+  
+
 
   const members = chatDetails ?. data ?. chat ?. members;
   
@@ -41,15 +44,17 @@ const Chat = ({chatId}) => {
 
   const newMessagesHandler = useCallback((data)=>{
     console.log(data);
-  },[])
-  
-  useEffect(()=>{
-     socket.on(NEW_MESSAGE,newMessagesHandler);
+    setMessages(prev => [...prev,data.message]);
+  },[]);
 
-     return ()=>{
-      socket.off(NEW_MESSAGE,newMessagesHandler)
-     }
-  },[])
+
+  const eventHandler = {    
+    [NEW_MESSAGE]: newMessagesHandler,
+  };
+
+  useSocketEvents(socket,eventHandler);
+
+
 
   return chatDetails.isLoading ? ( <Skeleton/> 
 
@@ -69,7 +74,7 @@ const Chat = ({chatId}) => {
       >
 
         {
-          sampleMessage.map((i)=>(
+          messages.map((i)=>(
             <MessageComponent key={i._id} message={i} user={user}/>
           ))
         }
