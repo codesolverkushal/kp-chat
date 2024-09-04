@@ -1,63 +1,78 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import AppLayout from '../components/layout/AppLayout';
-import { IconButton, Skeleton, Stack } from '@mui/material';
-import { graycolor } from '../constants/color';
-import { AttachFile as AttachFileIcon, Send as SendIcon } from '@mui/icons-material';
-import { InputBox } from '../components/styles/StyledComponents';
-import { orange } from '../constants/color';
-import FileMenu from '../components/dialog/FileMenu';
-import { sampleMessage } from '../constants/sampleData';
-import MessageComponent from '../components/shared/MessageComponent';
-import { getSocket } from '../Socket';
-import {NEW_MESSAGE} from "../constants/events";
-import { useChatDetailsQuery } from '../redux/api/api';
-import { useSocketEvents } from '../hooks/Hook';
+import {
+  AttachFile as AttachFileIcon,
+  Send as SendIcon,
+} from "@mui/icons-material";
+import { IconButton, Skeleton, Stack } from "@mui/material";
+import React, { useCallback, useRef, useState } from "react";
+import FileMenu from "../components/dialog/FileMenu";
+import AppLayout from "../components/layout/AppLayout";
+import MessageComponent from "../components/shared/MessageComponent";
+import { InputBox } from "../components/styles/StyledComponents";
+import { graycolor, orange } from "../constants/color";
+import { NEW_MESSAGE } from "../constants/events";
+import { useErrors, useSocketEvents } from "../hooks/Hook";
+import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
+import { getSocket } from "../Socket";
+import { useInfiniteScrollTop } from "6pp";
 
-
-const Chat = ({chatId,user}) => {
+const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
 
   const socket = getSocket();
 
-  const chatDetails = useChatDetailsQuery({chatId,skip:!chatId})
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
-  const [message,setMessage] = useState("");
+  const [page, setPage] = useState(1);
 
-  const [messages,setMessages] = useState([]);
-  
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
 
+  const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
 
-  const members = chatDetails ?. data ?. chat ?. members;
-  
+  const {data:oldMessages,setData: setOldMessages} = useInfiniteScrollTop(
+    containerRef,
+    oldMessagesChunk.data?.totalPages,
+    page,
+    setPage,
+    oldMessagesChunk.data?.messages
+  );
 
-  const submitHandler = (e)=>{
+  const errors = [
+    { isError: chatDetails.isError, error: chatDetails.error },
+    { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
+  ];
+
+  console.log("OldMessgesChunk", oldMessages);
+
+  const members = chatDetails?.data?.chat?.members;
+
+  const submitHandler = (e) => {
     e.preventDefault();
 
-    if(!message.trim()) return ;
-
+    if (!message.trim()) return;
 
     // Emitting message to the server...
-    socket.emit(NEW_MESSAGE,{chatId,members,message});
+    socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
-  }
+  };
 
-
-  const newMessagesHandler = useCallback((data)=>{
+  const newMessagesHandler = useCallback((data) => {
     console.log(data);
-    setMessages(prev => [...prev,data.message]);
-  },[]);
+    setMessages((prev) => [...prev, data.message]);
+  }, []);
 
-
-  const eventHandler = {    
+  const eventHandler = {
     [NEW_MESSAGE]: newMessagesHandler,
   };
 
-  useSocketEvents(socket,eventHandler);
+  useSocketEvents(socket, eventHandler);
 
+  useErrors(errors);
 
+  const allMessages = [...oldMessages,...messages];
 
-  return chatDetails.isLoading ? ( <Skeleton/> 
-
+  return chatDetails.isLoading ? (
+    <Skeleton />
   ) : (
     <>
       <Stack
@@ -68,20 +83,16 @@ const Chat = ({chatId,user}) => {
         bgcolor={graycolor}
         height={"90%"}
         sx={{
-          overflowX: 'hidden',
-          overflowY: 'auto',
+          overflowX: "hidden",
+          overflowY: "auto",
         }}
       >
-
-        {
-          messages.map((i)=>(
-            <MessageComponent key={i._id} message={i} user={user}/>
-          ))
-        }
-
+        {allMessages.map((i) => (
+          <MessageComponent key={i._id} message={i} user={user} />
+        ))}
       </Stack>
 
-      <form style={{ height: '10%' }} onSubmit={submitHandler}>
+      <form style={{ height: "10%" }} onSubmit={submitHandler}>
         <Stack
           direction={"row"}
           height={"100%"}
@@ -91,26 +102,30 @@ const Chat = ({chatId,user}) => {
         >
           <IconButton
             sx={{
-              position: 'absolute',
-              left: '1.5rem',
-              rotate: '35deg',
+              position: "absolute",
+              left: "1.5rem",
+              rotate: "35deg",
             }}
           >
             <AttachFileIcon />
           </IconButton>
 
-          <InputBox placeholder='Type your thought...' value={message} onChange={(e)=>setMessage(e.target.value)}/>
+          <InputBox
+            placeholder="Type your thought..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
 
           <IconButton
-            type='submit'
+            type="submit"
             sx={{
               backgroundColor: orange,
-              color: 'white',
-              marginLeft: '1rem',
-              padding: '0.5rem',
-              '&:hover': {
-                rotate: '-90deg',
-                backgroundColor: 'error.dark',
+              color: "white",
+              marginLeft: "1rem",
+              padding: "0.5rem",
+              "&:hover": {
+                rotate: "-90deg",
+                backgroundColor: "error.dark",
               },
             }}
           >
@@ -121,7 +136,6 @@ const Chat = ({chatId,user}) => {
       <FileMenu />
     </>
   );
-
 };
 
 export default AppLayout()(Chat); // Corrected HOC usage
