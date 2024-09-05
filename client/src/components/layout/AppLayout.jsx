@@ -33,9 +33,9 @@ const AppLayout = () => (WrappedComponent) => {
 
     useErrors([{ isError, error }]);
 
-    useEffect(()=>{
-       getOrSaveFromStorage({key:NEW_MESSAGE_ALERT, value: newMessagesAlert})
-    },[newMessagesAlert])
+    useEffect(() => {
+      getOrSaveFromStorage({ key: NEW_MESSAGE_ALERT, value: newMessagesAlert });
+    }, [newMessagesAlert]);
 
     const handleDeleteChat = (e, _id, groupChat) => {
       e.preventDefault();
@@ -44,19 +44,21 @@ const AppLayout = () => (WrappedComponent) => {
 
     const handleMobileClose = () => dispatch(setIsMobile(false));
 
-    const newMesssageAlertHandler = useCallback((data) => {
-      if(data.chatId === chatId) return;
-      dispatch(setNewMessagesAlert(data));
-    }, []);
+    const newMessageAlertListener = useCallback(
+      (data) => {
+        if (data.chatId === chatId) return;
+        dispatch(setNewMessagesAlert(data));
+      },
+      [chatId]
+    );
 
-    
-    const newRequestHandler = useCallback(()=>{
+    const newRequestListener = useCallback(() => {
       dispatch(incrementNotification());
-    },[dispatch])
+    }, [dispatch]);
 
     const eventHandlers = {
-       [NEW_MESSAGE_ALERT]: newMesssageAlertHandler, 
-       [NEW_REQUEST]: newRequestHandler,
+       [NEW_MESSAGE_ALERT]: newMessageAlertListener, 
+       [NEW_REQUEST]: newRequestListener,
       
       };
 

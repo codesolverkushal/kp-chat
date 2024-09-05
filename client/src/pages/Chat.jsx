@@ -9,7 +9,7 @@ import AppLayout from "../components/layout/AppLayout";
 import MessageComponent from "../components/shared/MessageComponent";
 import { InputBox } from "../components/styles/StyledComponents";
 import { graycolor, orange } from "../constants/color";
-import { NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
+import { ALERT, NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
 import { useErrors, useSocketEvents } from "../hooks/Hook";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { getSocket } from "../Socket";
@@ -109,26 +109,48 @@ const Chat = ({ chatId, user }) => {
     }
   },[messages])
 
-  const newMessagesListener = useCallback((data) => {
-    
-    if(data.chatId != chatId) return;
-    setMessages((prev) => [...prev, data.message]);
-  }, [chatId]);
+  const newMessagesListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId]
+  );
 
   const startTypingListener = useCallback((data) => {
     
-    if(data.chatId != chatId) return;
+    if(data.chatId !== chatId) return;
     setUserTyping(true);
   }, [chatId]);
 
 
   const stopTypingListener = useCallback((data) => {
     
-    if(data.chatId != chatId) return;
+    if(data.chatId !== chatId) return;
     setUserTyping(false);
   }, [chatId]);
 
+  const alertListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      const messageForAlert = {
+        content: data.message,
+        sender: {
+          _id: "djasdhajksdhasdsadasdas",
+          name: "Admin",
+        },
+        chat: chatId,
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, messageForAlert]);
+    },
+    [chatId]
+  );
+
   const eventHandler = {
+    [ALERT]: alertListener,
     [NEW_MESSAGE]: newMessagesListener,
     [START_TYPING]: startTypingListener,
     [STOP_TYPING]: stopTypingListener,
