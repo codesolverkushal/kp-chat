@@ -50,6 +50,8 @@ const io = new Server(server, {
   cors: corsOptions,
 });
 
+app.set("io", io);
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
