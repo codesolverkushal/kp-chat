@@ -7,12 +7,7 @@ const ChatList = ({
   chats = [],
   chatId,
   onlineUsers = [],
-  newMessagesAlert = [
-    {
-      chatId: "",
-      count: 0,
-    },
-  ],
+  newMessagesAlert,
   handleDeleteChat,
 }) => {
   return (

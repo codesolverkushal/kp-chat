@@ -3,30 +3,39 @@ import {
   Send as SendIcon,
 } from "@mui/icons-material";
 import { IconButton, Skeleton, Stack } from "@mui/material";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import FileMenu from "../components/dialog/FileMenu";
 import AppLayout from "../components/layout/AppLayout";
 import MessageComponent from "../components/shared/MessageComponent";
 import { InputBox } from "../components/styles/StyledComponents";
 import { graycolor, orange } from "../constants/color";
-import { NEW_MESSAGE } from "../constants/events";
+import { NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
 import { useErrors, useSocketEvents } from "../hooks/Hook";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { getSocket } from "../Socket";
 import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from "react-redux";
 import { setIsFileMenu } from "../redux/reducers/misc";
+import { removeNewMessagesAlert } from "../redux/reducers/chat";
+import { TypingLoader } from "../components/layout/Loaders";
 
 const Chat = ({ chatId, user }) => {
   const containerRef = useRef(null);
   const socket = getSocket();
   const dispatch = useDispatch();
 
+  const bottomRef = useRef(null);
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
   const [page, setPage] = useState(1);
   const [fileMenuAnchor,setFileMenuAnchor] = useState(null);
+
+  const [IamTyping,setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+  const typingTimeOut = useRef(null);
+
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
 
@@ -49,6 +58,23 @@ const Chat = ({ chatId, user }) => {
 
   const members = chatDetails?.data?.chat?.members;
 
+  const messageOnChange = (e)=>{
+    setMessage(e.target.value);
+    
+    if(!IamTyping){
+      socket.emit(START_TYPING,{members,chatId});
+      setIamTyping(true);
+    }
+
+    if(typingTimeOut.current) clearTimeout(typingTimeOut.current);
+
+    typingTimeOut.current = setTimeout(()=>{
+      socket.emit(STOP_TYPING,{members,chatId});
+      setIamTyping(false);
+    },2000)
+    
+  }
+
   const handleFileOpen = (e) => {
     dispatch(setIsFileMenu(true));
     setFileMenuAnchor(e.currentTarget);
@@ -64,13 +90,48 @@ const Chat = ({ chatId, user }) => {
     setMessage("");
   };
 
-  const newMessagesHandler = useCallback((data) => {
-    // console.log(data);
+  useEffect(()=>{
+
+    dispatch(removeNewMessagesAlert(chatId));
+
+    return()=>{
+      setMessages([]);
+      setMessage("");
+      setOldMessages([]);
+      setPage(1);
+    }
+
+  },[chatId]);
+
+  useEffect(()=>{
+    if(bottomRef.current){
+      bottomRef.current.scrollIntoView({behavior:"smooth"});
+    }
+  },[messages])
+
+  const newMessagesListener = useCallback((data) => {
+    
+    if(data.chatId != chatId) return;
     setMessages((prev) => [...prev, data.message]);
-  }, []);
+  }, [chatId]);
+
+  const startTypingListener = useCallback((data) => {
+    
+    if(data.chatId != chatId) return;
+    setUserTyping(true);
+  }, [chatId]);
+
+
+  const stopTypingListener = useCallback((data) => {
+    
+    if(data.chatId != chatId) return;
+    setUserTyping(false);
+  }, [chatId]);
 
   const eventHandler = {
-    [NEW_MESSAGE]: newMessagesHandler,
+    [NEW_MESSAGE]: newMessagesListener,
+    [START_TYPING]: startTypingListener,
+    [STOP_TYPING]: stopTypingListener,
   };
 
   useSocketEvents(socket, eventHandler);
@@ -98,6 +159,12 @@ const Chat = ({ chatId, user }) => {
         {allMessages.map((i) => (
           <MessageComponent key={i._id} message={i} user={user} />
         ))}
+
+        {
+          userTyping && <TypingLoader/>
+        }
+
+        <div ref={bottomRef}/>
       </Stack>
 
       <form style={{ height: "10%" }} onSubmit={submitHandler}>
@@ -123,7 +190,7 @@ const Chat = ({ chatId, user }) => {
           <InputBox
             placeholder="Type your thought..."
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={messageOnChange}
           />
 
           <IconButton
