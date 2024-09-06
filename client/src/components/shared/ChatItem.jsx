@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { Link } from "../styles/StyledComponents";
 import { Avatar, Box, Stack, Typography } from "@mui/material";
 import AvatarCard from "./AvatarCard";
+import {motion} from "framer-motion";
 
 const ChatItem = ({
   avatar = [],
@@ -24,7 +25,10 @@ const ChatItem = ({
     >
 
       
-      <div
+      <motion.div
+      initial={{ opacity: 0, y: "-100%" }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.1 * index }}
         style={{
           display: "flex",
           gap: "1rem",
@@ -63,7 +67,7 @@ const ChatItem = ({
             >
           </Box>
         )}
-      </div>
+      </motion.div>
     </Link>
   );
 };

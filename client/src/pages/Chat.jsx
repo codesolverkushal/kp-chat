@@ -113,7 +113,7 @@ const Chat = ({ chatId, user }) => {
 
 
   useEffect(()=>{
-    if(!chatDetails.data?.chat) return navigate("/");
+    if(!chatDetails.data?.chat) return navigate("/")
   },[chatDetails.data])
 
   const newMessagesListener = useCallback(

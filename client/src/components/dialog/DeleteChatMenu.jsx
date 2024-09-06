@@ -20,8 +20,6 @@ const DeleteChatMenu = ({ dispatch, deleteMenuAnchor }) => {
     (state) => state.misc
   );
 
-
-
   const [deleteChat, _, deleteChatData] = useAsyncMutation(
     useDeleteChatMutation
   );
