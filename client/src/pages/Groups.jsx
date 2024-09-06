@@ -3,6 +3,7 @@ import {
   Backdrop,
   Box,
   Button,
+  CircularProgress,
   Drawer,
   Grid,
   IconButton,
@@ -24,7 +25,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "./../components/shared/AvatarCard";
 import UserItem from "../components/shared/UserItem";
-import { useAddGroupMembersMutation, useChatDetailsQuery, useMyGroupsQuery, useRemoveGroupMemberMutation, useRenameGroupMutation } from "../redux/api/api";
+import { useAddGroupMembersMutation, useChatDetailsQuery, useDeleteChatMutation, useMyGroupsQuery, useRemoveGroupMemberMutation, useRenameGroupMutation } from "../redux/api/api";
 import { useAsyncMutation, useErrors } from "../hooks/Hook";
 import { LayoutLoader } from "../components/layout/Loaders";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,6 +56,8 @@ const Groups = () => {
   const [updateGroup,isLoadingGroupName] = useAsyncMutation(useRenameGroupMutation);
   
   const [removeMember,isLoadingRemoveMember] = useAsyncMutation(useRemoveGroupMemberMutation);
+  
+  const [deleteGroup, isLoadingDeleteGroup] = useAsyncMutation(useDeleteChatMutation);
 
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState();
@@ -113,7 +116,6 @@ const Groups = () => {
   };
 
   const openConfirmDeleteHandler = () => {
-    console.log("Delete group");
     setConfirmDeleteDialog(true);
   };
   const closeConfirmDeleteHandler = () => {
@@ -125,8 +127,9 @@ const Groups = () => {
   };
 
   const deleteHandler = () => {
-    console.log("Delete");
+    deleteGroup("Deleting Group...",chatId)
     closeConfirmDeleteHandler();
+    navigate("/groups");
   };
 
   const removeMemberHandler = (userId) => {
@@ -302,7 +305,7 @@ const Groups = () => {
             >
               {/* {Member Card} */}
 
-              {members.map((i) => (
+              {isLoadingRemoveMember? <CircularProgress/> : members.map((i) => (
                 <UserItem
                   key={i._id}
                   user={i}
