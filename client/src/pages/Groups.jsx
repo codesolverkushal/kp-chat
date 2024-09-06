@@ -24,8 +24,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "./../components/shared/AvatarCard";
 import UserItem from "../components/shared/UserItem";
-import { useChatDetailsQuery, useMyGroupsQuery } from "../redux/api/api";
-import { useErrors } from "../hooks/Hook";
+import { useChatDetailsQuery, useMyGroupsQuery, useRenameGroupMutation } from "../redux/api/api";
+import { useAsyncMutation, useErrors } from "../hooks/Hook";
 import { LayoutLoader } from "../components/layout/Loaders";
 const ConfirmDeleteDialog = lazy(() =>
   import("../components/dialog/ConfirmDeleteDialog")
@@ -46,6 +46,8 @@ const Groups = () => {
     { chatId, populate: true },
     { skip: !chatId }
   );
+
+  const [updateGroup,isLoadingGroupName] = useAsyncMutation(useRenameGroupMutation)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState();
   const [isEdit, setIsEdit] = useState(false);
@@ -96,7 +98,10 @@ const Groups = () => {
 
   const updateGroupName = () => {
     setIsEdit(false);
-    console.log("Update Group Name");
+    updateGroup("Updating Group name...",{
+      chatId,
+      name: groupNameUpdateValue,
+    })
   };
 
   const openConfirmDeleteHandler = () => {
@@ -184,14 +189,14 @@ const Groups = () => {
             value={groupNameUpdateValue}
             onChange={(e) => setGroupNameUpdateValue(e.target.value)}
           />
-          <IconButton onClick={updateGroupName}>
+          <IconButton onClick={updateGroupName} disabled={isLoadingGroupName}>
             <DoneIcon />
           </IconButton>
         </>
       ) : (
         <>
           <Typography variant="h4">{groupName}</Typography>
-          <IconButton onClick={() => setIsEdit(true)}>
+          <IconButton disabled={isLoadingGroupName} onClick={() => setIsEdit(true)}>
             <EditIcon />
           </IconButton>
         </>
