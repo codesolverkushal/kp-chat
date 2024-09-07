@@ -95,17 +95,19 @@ const MessageManagement = () => {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(
-      data?.messages.map((i) => ({
-        ...i,
-        id: i._id,
-        sender: {
-          name: i.sender.name,
-          avatar: transformImage(i.sender.avatar, 50),
-        },
-        createdAt: moment(i.createdAt).format("MMM Do YYYY", "h:mm:ss a"),
-      }))
-    );
+    if(data){
+      setRows(
+        data?.messages.map((i) => ({
+          ...i,
+          id: i._id,
+          sender: {
+            name: i.sender.name,
+            avatar: transformImage(i.sender.avatar, 50),
+          },
+          createdAt: moment(i.createdAt).format("MMM Do YYYY", "h:mm:ss a"),
+        }))
+      );
+    }
   }, [data]);
   return (
     <AdminLayout>

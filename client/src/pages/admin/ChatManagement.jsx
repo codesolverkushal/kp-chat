@@ -29,6 +29,12 @@ const columns = [
     width: 300,
   },
   {
+    field: "groupChat",
+    headerName: "Group",
+    headerClassName: "table-header",
+    width: 300,
+  },
+  {
     field: "totalMembers",
     headerName: "Total Members",
     headerClassName: "table-header",
@@ -68,7 +74,6 @@ const ChatManagement = () => {
     "users-chats"
   );
 
-  console.log(data);
 
   useErrors([
     {
@@ -80,18 +85,20 @@ const ChatManagement = () => {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(
-      data?.chats.map((i) => ({
-        ...i,
-        id: i._id,
-        avatar: i.avatar.map((i) => transformImage(i, 50)),
-        members: i.members.map((i) => transformImage(i.avatar, 50)),
-        creator: {
-          name: i.creator.name,
-          avatar: transformImage(i.creator.avatar, 50),
-        },
-      }))
-    );
+    if(data){
+      setRows(
+        data?.chats.map((i) => ({
+          ...i,
+          id: i._id,
+          avatar: i.avatar.map((i) => transformImage(i, 50)),
+          members: i.members.map((i) => transformImage(i.avatar, 50)),
+          creator: {
+            name: i.creator.name,
+            avatar: transformImage(i.creator.avatar, 50),
+          },
+        }))
+      );
+    }
   }, [data]);
   return (
     <AdminLayout>
