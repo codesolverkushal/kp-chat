@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Header from "./Header";
 import Title from "../shared/Title";
 import { Drawer, Grid, Skeleton } from "@mui/material";
@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsDeleteMenu, setIsMobile, setSelectedDeleteChat } from "../../redux/reducers/misc";
 import { useErrors, useSocketEvents } from "../../hooks/Hook";
 import { getSocket } from "../../Socket";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST, REFETCH_CHATS } from "../../constants/events";
+import { NEW_MESSAGE_ALERT, NEW_REQUEST, ONLINE_USERS, REFETCH_CHATS } from "../../constants/events";
 import { incrementNotification, setNewMessagesAlert } from "../../redux/reducers/chat";
 import { getOrSaveFromStorage } from "../../lib/features";
 import DeleteChatMenu from "../dialog/DeleteChatMenu";
@@ -23,6 +23,8 @@ const AppLayout = () => (WrappedComponent) => {
     const dispatch = useDispatch();
 
     const deleteMenuAnchor = useRef(null);
+
+    const [onlineUsers,setOnlineUsers] = useState([])
 
     const socket = getSocket();
 
@@ -65,10 +67,15 @@ const AppLayout = () => (WrappedComponent) => {
         navigate("/");
     },[refetch]);
 
+    const onlineUsersListener = useCallback((data) => {
+      setOnlineUsers(data);
+    }, []);
+
     const eventHandlers = {
        [NEW_MESSAGE_ALERT]: newMessageAlertListener, 
        [NEW_REQUEST]: newRequestListener,
        [REFETCH_CHATS]:refetchListener,
+       [ONLINE_USERS]: onlineUsersListener,
       
       };
 
@@ -94,6 +101,7 @@ const AppLayout = () => (WrappedComponent) => {
               chatId={chatId}
               handleDeleteChat={handleDeleteChat}
               newMessagesAlert={newMessagesAlert}
+              onlineUsers={onlineUsers}
             />
           </Drawer>
         )}
@@ -116,6 +124,7 @@ const AppLayout = () => (WrappedComponent) => {
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
                 newMessagesAlert={newMessagesAlert}
+                onlineUsers={onlineUsers}
               />
             )}
           </Grid>

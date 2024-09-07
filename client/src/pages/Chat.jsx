@@ -9,7 +9,7 @@ import AppLayout from "../components/layout/AppLayout";
 import MessageComponent from "../components/shared/MessageComponent";
 import { InputBox } from "../components/styles/StyledComponents";
 import { graycolor, orange } from "../constants/color";
-import { ALERT, NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
+import { ALERT, CHAT_JOINED, CHAT_LEAVED, NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
 import { useErrors, useSocketEvents } from "../hooks/Hook";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { getSocket } from "../Socket";
@@ -93,6 +93,8 @@ const Chat = ({ chatId, user }) => {
   };
 
   useEffect(()=>{
+    
+    socket.emit(CHAT_JOINED,{userId: user._id, members});
 
     dispatch(removeNewMessagesAlert(chatId));
 
@@ -101,6 +103,7 @@ const Chat = ({ chatId, user }) => {
       setMessage("");
       setOldMessages([]);
       setPage(1);
+      socket.emit(CHAT_LEAVED,{userId: user._id, members});
     }
 
   },[chatId]);
