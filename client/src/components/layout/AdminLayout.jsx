@@ -18,6 +18,10 @@ import {
   ExitToApp as ExitToAppIcon,
 } from "@mui/icons-material";
 import { useLocation, Link as LinkComponent, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogout } from "../../redux/thunks/admin";
+
+
 
 const Link = styled(LinkComponent)`
   text-decoration: none;
@@ -54,8 +58,10 @@ const adminTabs = [
 
 const Sidebar = ({ w = "100%" }) => {
   const location = useLocation();
+  const dispatch = useDispatch();
+
   const logoutHandler = () => {
-    console.log("Logout");
+    dispatch(adminLogout());
   };
   return (
     <Stack width={w} direction={"column"} p={"3rem"} spacing={"3rem"}>
@@ -94,9 +100,9 @@ const Sidebar = ({ w = "100%" }) => {
   );
 };
 
-const isAdmin = true;
 
 const AdminLayout = ({ children }) => {
+  const {isAdmin} = useSelector(state => state.auth);
   const [isMobile, setIsMobile] = useState(false);
 
   const handleMobile = () => {
