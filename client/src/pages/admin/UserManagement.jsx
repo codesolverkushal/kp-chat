@@ -1,22 +1,27 @@
-import React, { useEffect, useState } from 'react'
-import AdminLayout from '../../components/layout/AdminLayout'
-import Table from '../../components/shared/Table'
-import { Avatar } from '@mui/material';
-import { dashboardData } from '../../constants/sampleData';
-import {transformImage} from "../../lib/features";
+import React, { useEffect, useState } from "react";
+import AdminLayout from "../../components/layout/AdminLayout";
+import Table from "../../components/shared/Table";
+import { Avatar, Skeleton } from "@mui/material";
+import { dashboardData } from "../../constants/sampleData";
+import { transformImage } from "../../lib/features";
+import { useErrors } from "../../hooks/Hook";
+import { useFetchData } from "6pp";
+import { server } from "../../constants/config";
 const columns = [
   {
-    field:"id",
-    headerName:"ID",
-    headerClassName:"table-header",
-    width:200,
+    field: "id",
+    headerName: "ID",
+    headerClassName: "table-header",
+    width: 200,
   },
   {
-    field:"avatar",
-    headerName:"Avatar",
-    headerClassName:"table-header",
-    width:150,
-    renderCell:(params)=><Avatar alt = {params.row.name} src={params.row.avatar}/>
+    field: "avatar",
+    headerName: "Avatar",
+    headerClassName: "table-header",
+    width: 150,
+    renderCell: (params) => (
+      <Avatar alt={params.row.name} src={params.row.avatar} />
+    ),
   },
   {
     field: "name",
@@ -44,20 +49,44 @@ const columns = [
   },
 ];
 const UserManagement = () => {
+  const { loading, data, error } = useFetchData(
+    `${server}/api/v1/admin/users`,
+    "dashboard-users"
+  );
 
-  const [rows,setRows] = useState([]);
 
+  useErrors([
+    {
+      isError: error,
+      error: error,
+    },
+  ]);
 
-  useEffect(()=>{
-    setRows(dashboardData.users.map((i)=>({...i,id:i._id,
-      avatar:transformImage(i.avatar,50)
-    })));
-  },[])
+ 
+
+  const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    if(data){
+      setRows(
+        data?.users.map((i) => ({
+          ...i,
+          id: i._id,
+          avatar: transformImage(i.avatar, 50),
+        }))
+      );
+    }
+  }, [data]);
+
   return (
     <AdminLayout>
-        <Table heading={"All Users"} columns={columns} rows={rows}/>
+      {loading ? (
+        <Skeleton />
+      ) : (
+        <Table heading={"All Users"} columns={columns} rows={rows} />
+      )}
     </AdminLayout>
-  )
-}
+  );
+};
 
-export default UserManagement
+export default UserManagement;

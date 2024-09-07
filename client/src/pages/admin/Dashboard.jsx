@@ -32,7 +32,6 @@ const Dashboard = () => {
     "dashboard-stats"
   );
 
-  console.log(data);
 
   const { stats } = data || {};
 
