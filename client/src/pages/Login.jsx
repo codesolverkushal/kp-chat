@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { Container, Paper, TextField, Typography, Button, Stack, Avatar, IconButton } from '@mui/material';
-import {CameraAlt as CameraAltIcon} from '@mui/icons-material'
-import { VisuallyHiddenInput } from '../components/styles/StyledComponents';
-import {useFileHandler, useInputValidation,useStrongPassword} from '6pp';
-import { userNameValidator } from '../utils/Validator';
+import { useFileHandler, useInputValidation } from '6pp';
+import { CameraAlt as CameraAltIcon } from '@mui/icons-material';
+import { Avatar, Button, Container, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { VisuallyHiddenInput } from '../components/styles/StyledComponents';
 import { server } from '../constants/config';
 import { userExists } from '../redux/reducers/auth';
-import { useDispatch } from 'react-redux';
+import { userNameValidator } from '../utils/Validator';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading,setIsLoading] = useState(false);
   const toggleLogin = () => setIsLogin((prev)=> !prev);
 
   const dispatch = useDispatch();
@@ -27,6 +28,9 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    const toastId = toast.loading("Logging In...");
+    setIsLoading(true);
     
     const config = {
       withCredentials: true,
@@ -46,16 +50,23 @@ const Login = () => {
       );
       dispatch(userExists(data.user));
       toast.success(data.message, {
-       
+       id:toastId
       });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something Went Wrong");
-    } 
+      toast.error(error?.response?.data?.message || "Something Went Wrong",{id:toastId});
+    } finally{
+      setIsLoading(false);
+    }
   };
 
 
   const handleSignUp = async (e) => {
     e.preventDefault();  
+
+    const toastId = toast.loading("Logging In...");
+
+
+    setIsLoading(true);
 
     const formData = new FormData();
     formData.append("avatar", avatar.file);
@@ -79,9 +90,15 @@ const Login = () => {
       );
 
       dispatch(userExists(data.user));
-      toast.success(data.message);
+      toast.success(data.message,{
+        id:toastId
+      });
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something Went Wrong");
+      toast.error(error?.response?.data?.message || "Something Went Wrong",{
+        id:toastId
+      });
+    } finally{
+      setIsLoading(false);
     }
   };
 
@@ -111,13 +128,13 @@ const Login = () => {
               <TextField required fullWidth label="Username" margin="normal" variant="outlined" value={username.value} onChange={username.changeHandler} />
               <TextField required fullWidth label="Password" type="password" margin="normal" variant="outlined" value={password.value} onChange={password.changeHandler} />
 
-              <Button sx={{ marginTop: "1rem" }} variant="contained" color="primary" type="submit" fullWidth>
+              <Button sx={{ marginTop: "1rem" }} variant="contained" color="primary" type="submit" fullWidth disabled={isLoading}>
                 Login
               </Button>
 
               <Typography textAlign={"center"} sx={{ marginTop: "1rem" }}>Or</Typography>
 
-              <Button fullWidth variant="text" onClick={toggleLogin}>
+              <Button fullWidth variant="text" onClick={toggleLogin} disabled={isLoading}>
                 Sign Up
               </Button>
             </form>
@@ -185,13 +202,13 @@ const Login = () => {
               <TextField required fullWidth label="Password" type="password" margin="normal" variant="outlined" value={password.value} onChange={password.changeHandler} />
                 
              
-              <Button sx={{ marginTop: "1rem" }} variant="contained" color="primary" type="submit" fullWidth>
+              <Button sx={{ marginTop: "1rem" }} variant="contained" color="primary" type="submit" fullWidth disabled={isLoading}>
                Sign Up
               </Button>
 
               <Typography textAlign={"center"} sx={{ marginTop: "1rem" }}>Or</Typography>
 
-              <Button fullWidth variant="text" onClick={toggleLogin}>
+              <Button fullWidth variant="text" onClick={toggleLogin} disabled={isLoading}>
                 Login
               </Button>
             </form>
